@@ -1,0 +1,24 @@
+{
+  "name": "lambda-cpf-auth",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+      "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@types/aws-lambda": "^8.10.152",
+    "@types/node": "^24.3.0",
+    "jsonwebtoken": "^9.0.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2"
+  },
+  "devDependencies": {
+    "serverless": "^4.18.2",
+    "serverless-offline": "^14.4.0"
+  }
+}
