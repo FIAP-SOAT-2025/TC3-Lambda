@@ -11,7 +11,7 @@ export class CognitoService {
     this.userPoolId = process.env.COGNITO_USER_POOL_ID || "";
   }
 
-   async findByCpf(cpf: string): Promise<{ cpf: string } | null> {
+   async findUserByCpf(cpf: string): Promise<{ cpf: string } | null> {
     console.log("Iniciando busca de usuário:", cpf);
 
     const command = new ListUsersCommand({

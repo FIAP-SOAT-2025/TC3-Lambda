@@ -14,7 +14,7 @@ class CognitoService {
     this.userPoolId = process.env.COGNITO_USER_POOL_ID || "";
   }
 
-  async findByCpf(cpf) {
+  async findUserByCpf(cpf) {
     console.log("Iniciando busca de usuário:", cpf);
 
     const command = new client_cognito_identity_provider_1.ListUsersCommand({
