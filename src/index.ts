@@ -20,8 +20,6 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     if (cpf.length !== 11) return { statusCode: 400, body: JSON.stringify({ error: "CPF inválido" }) };
 
     const customer = await cognito.findUserByCpf(cpf);
-    if (!customer) return { statusCode: 404, body: JSON.stringify({ error: "Cliente não encontrado" }) };
-
     const token = jwt.sign({ cpf: customer.cpf });
 
     return {
