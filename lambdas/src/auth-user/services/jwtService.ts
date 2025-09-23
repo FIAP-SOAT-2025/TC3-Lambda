@@ -8,7 +8,7 @@ export class JwtService {
   }
 
   sign(payload: object): string {
-    return jwt.sign(payload, this.secret, { expiresIn: "20s" });
+    return jwt.sign(payload, this.secret, { expiresIn: "1h" });
   }
 
   verify(token: string): string | JwtPayload {
