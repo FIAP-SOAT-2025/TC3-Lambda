@@ -11,7 +11,7 @@ class JwtService {
         this.secret = secret;
     }
     sign(payload) {
-        return jsonwebtoken_1.default.sign(payload, this.secret, { expiresIn: "1h" });
+        return jsonwebtoken_1.default.sign(payload, this.secret, { expiresIn: "20s" });
     }
     verify(token) {
         return jsonwebtoken_1.default.verify(token, this.secret);

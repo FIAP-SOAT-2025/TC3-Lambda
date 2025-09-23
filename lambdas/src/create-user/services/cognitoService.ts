@@ -16,28 +16,24 @@ export class CognitoService {
     this.userPoolId = process.env.COGNITO_USER_POOL_ID || "";
   }
 
-  async findUserByCpf(cpf: string): Promise<{ cpf: string } | null> {
-    console.log("Iniciando busca de usuário:", cpf);
+  async createUser(cpf: string): Promise<any> {
+    console.log("Criando usuário na base de dados...");
 
     try {
-      const command = new ListUsersCommand({
+      const command = new AdminCreateUserCommand({
         UserPoolId: this.userPoolId,
-        Filter: `username = "${cpf}"`,
+        Username: cpf,
+        TemporaryPassword: "Senha123!",
+        MessageAction: "SUPPRESS",
       });
 
       const response = await this.client.send(command);
 
-      if (!response.Users || response.Users.length === 0) {
-        console.log("Usuário não encontrado.");
-
-        return null ;
-      }
-
-      const user = response.Users[0];
-      return { cpf: user.Username || "" };
+      console.log("Usuário criado com sucesso!");
+      return response.User!;
     } catch (err) {
-      console.error("Erro ao buscar usuário:", err);
-      throw err;
+      console.error("Erro ao criar usuário:", err);
+      return err;
     }
   }
 }

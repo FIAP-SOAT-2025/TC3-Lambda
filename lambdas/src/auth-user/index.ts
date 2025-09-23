@@ -27,6 +27,11 @@ export const handler = async (
     }
 
     const customer = await cognito.findUserByCpf(cpf);
+
+    if (!customer) {
+      return { statusCode: 404, body: JSON.stringify({ error: "Usuário não encontrado" }) };
+    }
+
     const token = jwt.sign({ cpf: customer.cpf });
 
     return {

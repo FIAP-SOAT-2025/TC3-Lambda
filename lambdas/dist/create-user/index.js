@@ -2,9 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.handler = void 0;
 const cognitoService_1 = require("./services/cognitoService");
-const jwtService_1 = require("./services/jwtService");
 const cognito = new cognitoService_1.CognitoService();
-const jwt = new jwtService_1.JwtService(process.env.JWT_SECRET || "dev-secret");
 const handler = async (event) => {
     try {
         if (event.httpMethod !== "POST") {
@@ -19,19 +17,18 @@ const handler = async (event) => {
         if (cpf.length !== 11) {
             return { statusCode: 400, body: JSON.stringify({ error: "CPF inválido" }) };
         }
-        const customer = await cognito.findUserByCpf(cpf);
-        if (!customer) {
-            return { statusCode: 404, body: JSON.stringify({ error: "Usuário não encontrado" }) };
+        const customer = await cognito.createUser(cpf);
+        return { statusCode: 201, body: "Usuário criado com sucesso!" };
+    
+      } catch (err) {
+        console.error("Erro ao criar usuário:", err);
+    
+        if (err.name === "UsernameExistsException") {
+          return { statusCode: 400, body: JSON.stringify({ error: "User account already exists" }) };
         }
-        const token = jwt.sign({ cpf: customer.cpf });
-        return {
-            statusCode: 200,
-            body: JSON.stringify({ token }),
-        };
-    }
-    catch (err) {
-        console.error("Handler error:", err);
-        return { statusCode: 500, body: JSON.stringify({ error: "Erro interno" }) };
-    }
-};
+    
+        return { statusCode: 500, body: JSON.stringify({ error: "Erro interno no servidor" }) };
+      }
+    };
+
 exports.handler = handler;

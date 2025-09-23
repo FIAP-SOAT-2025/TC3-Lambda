@@ -11,23 +11,21 @@ class CognitoService {
         });
         this.userPoolId = process.env.COGNITO_USER_POOL_ID || "";
     }
-    async findUserByCpf(cpf) {
-        console.log("Iniciando busca de usuário:", cpf);
+    async createUser(cpf) {
+        console.log("Criando usuário na base de dados...");
         try {
-            const command = new client_cognito_identity_provider_1.ListUsersCommand({
+            const command = new client_cognito_identity_provider_1.AdminCreateUserCommand({
                 UserPoolId: this.userPoolId,
-                Filter: `username = "${cpf}"`,
+                Username: cpf,
+                TemporaryPassword: "Senha123!",
+                MessageAction: "SUPPRESS",
             });
             const response = await this.client.send(command);
-            if (!response.Users || response.Users.length === 0) {
-                console.log("Usuário não encontrado.");
-                return null;
-            }
-            const user = response.Users[0];
-            return { cpf: user.Username || "" };
+            console.log("Usuário criado com sucesso!");
+            return response.User;
         }
         catch (err) {
-            console.error("Erro ao buscar usuário:", err);
+            console.error("Erro ao criar usuário:", err);
             throw err;
         }
     }
