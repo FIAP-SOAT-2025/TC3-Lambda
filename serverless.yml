@@ -1,0 +1,16 @@
+service: lambda-cpf-auth
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+
+functions:
+  authenticateByCpf:
+    handler: dist/handler.authenticateByCpf
+    events:
+      - http:
+          path: auth
+          method: post
+
+plugins:
+  - serverless-offline
