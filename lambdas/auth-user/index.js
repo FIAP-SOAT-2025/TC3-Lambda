@@ -4,7 +4,7 @@ exports.handler = void 0;
 const cognitoService_1 = require("./services/cognitoService");
 const jwtService_1 = require("./services/jwtService");
 const cognito = new cognitoService_1.CognitoService();
-const jwt = new jwtService_1.JwtService(secrets.JWT_SECRET || "dev-secret");
+const jwt = new jwtService_1.JwtService(process.env.JWT_SECRET || "dev-secret");
 const handler = async (event) => {
     try {
         if (event.httpMethod !== "POST") {

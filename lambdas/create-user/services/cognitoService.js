@@ -7,9 +7,9 @@ class CognitoService {
     userPoolId;
     constructor() {
         this.client = new client_cognito_identity_provider_1.CognitoIdentityProviderClient({
-            region: secrets.AWS_REGION || "us-east-2",
+            region: process.env.AWS_REGION || "us-east-2",
         });
-        this.userPoolId = secrets.COGNITO_USER_POOL_ID || "";
+        this.userPoolId = process.env.COGNITO_USER_POOL_ID || "";
     }
     async createUser(cpf) {
         console.log("Criando usuário na base de dados...");

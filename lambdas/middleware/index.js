@@ -3,7 +3,7 @@ const { JwtService } = require("./services/jwtService");
 const { CognitoService } = require("./services/cognitoService");
 
 const cognito = new CognitoService();
-const jwtService = new JwtService(secrets.JWT_SECRET || "dev-secret", cognito);
+const jwtService = new JwtService(process.env.JWT_SECRET || "dev-secret", cognito);
 
 const handler = async (event) => {
   try {
