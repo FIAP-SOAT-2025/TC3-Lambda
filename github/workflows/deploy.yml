@@ -1,0 +1,44 @@
+name: Build and Upload Lambdas
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-upload:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Package Lambdas
+        run: |
+          mkdir -p dist
+          for lambda in lambdas/*; do
+            name=$(basename $lambda)
+            echo "📦 Packaging $name"
+            cp -r node_modules "$lambda/"
+            zip -r "dist/$name.zip" "$lambda"
+            rm -rf "$lambda/node_modules"
+          done
+
+      - name: Upload to S3
+        uses: aws-actions/s3-sync@v2
+        with:
+          bucket: ${{ secrets.AWS_BUCKET_NAME }}
+          region: ${{ secrets.AWS_REGION }}
+          source-dir: dist
+          delete: false
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
