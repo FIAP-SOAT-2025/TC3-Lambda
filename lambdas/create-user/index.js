@@ -1,8 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.handler = void 0;
-const cognitoService_1 = require("./services/cognitoService");
-const cognito = new cognitoService_1.CognitoService();
+const cognitoService = require("./services/cognitoService");
+const cognito = new cognitoService.CognitoService();
+const apiUrl = process.env.CUSTOMER_API_URL;
+const jwtService = require("./services/jwtService");
+const jwt = new jwtService.JwtService(process.env.JWT_SECRET || "dev-secret");
+
 const handler = async (event) => {
     try {
         if (event.httpMethod !== "POST") {
@@ -17,9 +21,27 @@ const handler = async (event) => {
         if (cpf.length !== 11) {
             return { statusCode: 400, body: JSON.stringify({ error: "CPF inválido" }) };
         }
-        const customer = await cognito.createUser(cpf);
-        return { statusCode: 201, body: "Usuário criado com sucesso!" };
-    
+
+        const response = await fetch(apiUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            cpf,
+            name: body.name,
+            email: body.email,
+          }),
+        });
+
+        if (response.status == 201) {
+          const customer = await cognito.createUser(cpf);
+          const token = jwt.sign({ cpf: customer.cpf });
+          return {
+            statusCode: 201,
+            body: JSON.stringify({ token }),
+            message: "Usuário criado com sucesso!"
+          };
+      }       
+
       } catch (err) {
         console.error("Erro ao criar usuário:", err);
     
@@ -27,7 +49,7 @@ const handler = async (event) => {
           return { statusCode: 400, body: JSON.stringify({ error: "User account already exists" }) };
         }
     
-        return { statusCode: 500, body: JSON.stringify({ error: "Erro interno no servidor" }) };
+        return { statusCode: 500, body: err };
       }
     };
 
