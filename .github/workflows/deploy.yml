@@ -41,8 +41,8 @@ jobs:
           command: cp
           source: ./dist/auth-user.zip
           destination: s3://lambda-code-tc3/auth-user/
-          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_access_key_id: ASIA4QELNZYHLEJ7TZMR
+          aws_secret_access_key: /pF5GKFH3onjYXHQLFnRmFw+j0Z0PVffgdQl5vwR
           aws_region: us-east-1
 
 
