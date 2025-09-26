@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches: [ "main" ]
+
 
 jobs:
   build-and-upload:
@@ -32,13 +35,27 @@ jobs:
             rm -rf "$lambda/node_modules"
           done
 
-      - name: Upload to S3
-        uses: aws-actions/s3-sync@v2
+      - name: Send first to S3
+        uses: keithweaver/aws-s3-github-action@v1.0.0
         with:
-          bucket: ${{ secrets.AWS_BUCKET_NAME }}
-          region: ${{ secrets.AWS_REGION }}
-          source-dir: dist
-          delete: false
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          command: cp
+          source: ./dist/auth-user.zip
+          destination: s3://lambda-code-tc3/auth-user/
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_region: us-east-1
+
+
+      # - name: Send to S3
+      #   uses: keithweaver/aws-s3-github-action@v1.0.0
+      #   with:
+      #     command: cp
+      #     source: ./dist/*.zip
+      #     destination: s3://lambda-code-tc3/
+      #     aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     aws_region: us-east-1
+
+
+
+
