@@ -43,8 +43,6 @@ jobs:
           aws-region: us-east-1 # Use the region where your S3 bucket resides
 
       - name: Upload All Lambdas to S3 🚀
-        # Using the AWS CLI (which is pre-installed on the runner) to sync the 'dist' folder.
-        # The 'sync' command is best practice for deployment as it only uploads new/changed files.
         run: |
           aws s3 sync ./dist/ s3://lambda-code-tc3/ \
             --exclude "*" \
