@@ -35,26 +35,24 @@ jobs:
             rm -rf "$lambda/node_modules"
           done
 
-      - name: Send first to S3
-        uses: keithweaver/aws-s3-github-action@v1.0.0
+      - name: Configure AWS Credentials 🔑
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          command: cp
-          source: ./dist/auth-user.zip
-          destination: s3://lambda-code-tc3/auth-user/
-          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws_region: us-east-1
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1 # Use the region where your S3 bucket resides
 
+      - name: Upload All Lambdas to S3 🚀
+        # Using the AWS CLI (which is pre-installed on the runner) to sync the 'dist' folder.
+        # The 'sync' command is best practice for deployment as it only uploads new/changed files.
+        run: |
+          aws s3 sync ./dist/ s3://lambda-code-tc3/ \
+            --exclude "*" \
+            --include "*.zip" 
+            
+          echo "✅ All zip files uploaded to s3://lambda-code-tc3/"
+      # --- END: New/Corrected AWS Steps ---
 
-      # - name: Send to S3
-      #   uses: keithweaver/aws-s3-github-action@v1.0.0
-      #   with:
-      #     command: cp
-      #     source: ./dist/*.zip
-      #     destination: s3://lambda-code-tc3/
-      #     aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #     aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #     aws_region: us-east-1
 
 
 
