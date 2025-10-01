@@ -49,6 +49,28 @@ jobs:
           echo "✅ All zip files uploaded to s3://lambda-code-tc3/"
 
 
+      - name: Update Lambda Function Code
+        run: |
+          # 1. Update auth-user Lambda
+          aws lambda update-function-code \
+            --function-name auth-user-function-name-on-aws \
+            --s3-bucket lambda-code-tc3 \
+            --s3-key auth-user.zip \
+            --publish
+            
+          # 2. Update second-lambda (example)
+          aws lambda update-function-code \
+            --function-name second-lambda-function-name-on-aws \
+            --s3-bucket lambda-code-tc3 \
+            --s3-key create-user.zip \
+            --publish
+          
+          aws lambda update-function-code \
+            --function-name second-lambda-function-name-on-aws \
+            --s3-bucket lambda-code-tc3 \
+            --s3-key middleware.zip \
+            --publish
+
 
 
 
