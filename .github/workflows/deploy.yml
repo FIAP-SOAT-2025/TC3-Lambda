@@ -47,29 +47,29 @@ jobs:
 
       - name: Upload All Lambdas to S3 🚀
         run: |
-          aws s3 sync ./dist/ s3:/terraform-state-tc3-g38-lanchonete/ \
+          aws s3 sync ./dist/ s3:/lambda-code-tc3-g38/ \
             --exclude "*" \
             --include "*.zip" 
-          echo "✅ All zip files uploaded to s3:/terraform-state-tc3-g38-lanchonete/"
+          echo "✅ All zip files uploaded to s3:/lambda-code-tc3-g38/"
 
 
       - name: Update Lambda Function Code
         run: |
           aws lambda update-function-code \
             --function-name auth-user-function \
-            --s3-bucket terraform-state-tc3-g38-lanchonete \
+            --s3-bucket lambda-code-tc3-g38 \
             --s3-key auth-user.zip \
             --publish
             
           aws lambda update-function-code \
             --function-name create-user-function \
-            --s3-bucket terraform-state-tc3-g38-lanchonete \
+            --s3-bucket lambda-code-tc3-g38 \
             --s3-key create-user.zip \
             --publish
           
           aws lambda update-function-code \
             --function-name middleware-function \
-            --s3-bucket terraform-state-tc3-g38-lanchonete \
+            --s3-bucket lambda-code-tc3-g38 \
             --s3-key middleware.zip \
             --publish
 
