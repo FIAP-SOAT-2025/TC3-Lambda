@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.handler = void 0;
 const cognitoService = require("./services/cognitoService");
 const cognito = new cognitoService.CognitoService();
-const apiUrl = process.env.CUSTOMER_API_URL;
+const apiUrl = `${process.env.CUSTOMER_API_URL}/customer`;
 const jwtService = require("./services/jwtService");
 const jwt = new jwtService.JwtService(process.env.JWT_SECRET || "dev-secret");
 
