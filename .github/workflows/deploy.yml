@@ -33,7 +33,9 @@ jobs:
             name=$(basename $lambda)
             echo "📦 Packaging $name"
             cp -r node_modules "$lambda/"
-            zip -r "dist/$name.zip" "$lambda"
+            cd "$lambda"
+            zip -r "../../dist/$name.zip" *
+            cd - > /dev/null
             rm -rf "$lambda/node_modules"
           done
 
