@@ -47,10 +47,10 @@ jobs:
 
       - name: Upload All Lambdas to S3 🚀
         run: |
-          aws s3 sync ./dist/ s3:/lambda-code-tc3-g38/ \
+          aws s3 sync ./dist/ s3://lambda-code-tc3-g38/ \
             --exclude "*" \
             --include "*.zip" 
-          echo "✅ All zip files uploaded to s3:/lambda-code-tc3-g38/"
+          echo "✅ All zip files uploaded to s3://lambda-code-tc3-g38/"
 
 
       - name: Update Lambda Function Code
