@@ -67,10 +67,6 @@ jobs:
 
   update-lambdas:
     runs-on: ubuntu-latest
-    
-    needs: 
-      - build-and-upload
-      
     if: |
       github.event_name == 'workflow_dispatch' && github.event.inputs.trigger_job == 'update_lambdas_only'
       
@@ -85,6 +81,7 @@ jobs:
 
       - name: Update Lambda Function Code
         run: |
+          echo "🔄 Updating Lambda functions from S3 bucket: lambda-code-tc3-g38"
           aws lambda update-function-code \
             --function-name auth-user-function \
             --s3-bucket lambda-code-tc3-g38 \
@@ -102,3 +99,4 @@ jobs:
             --s3-bucket lambda-code-tc3-g38 \
             --s3-key middleware.zip \
             --publish
+          echo "✅ All Lambda function codes have been updated and published."
