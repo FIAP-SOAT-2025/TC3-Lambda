@@ -40,7 +40,9 @@ const handler = async (event) => {
             body: JSON.stringify({ token }),
             message: "Usuário criado com sucesso!"
           };
-      }       
+      }  else {
+        return { statusCode: response.status, body: JSON.stringify({ error: response.message }) };
+      }
 
       } catch (err) {
         console.error("Erro ao criar usuário:", err);
