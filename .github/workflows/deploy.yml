@@ -7,13 +7,24 @@ on:
   # pull_request:
   #   branches: [ "main" ]
   workflow_dispatch:
-
+    inputs:
+      trigger_job:
+        description: 'Select the job to run'
+        required: true
+        default: 'build_and_upload_only'
+        type: choice
+        options:
+          - 'build_and_upload_only'
+          - 'update_lambdas_only'
 
 
 jobs:
   build-and-upload:
     runs-on: ubuntu-latest
-
+    if: |
+      github.event_name == 'push' || 
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.trigger_job == 'build_and_upload_only')
+      
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -39,7 +50,7 @@ jobs:
             rm -rf "$lambda/node_modules"
           done
 
-      - name: Configure AWS Credentials
+      - name: Configure AWS Credentials for Build/Upload
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -54,6 +65,23 @@ jobs:
             --include "*.zip" 
           echo "✅ All zip files uploaded to s3://lambda-code-tc3-g38/"
 
+  update-lambdas:
+    runs-on: ubuntu-latest
+    
+    needs: 
+      - build-and-upload
+      
+    if: |
+      github.event_name == 'workflow_dispatch' && github.event.inputs.trigger_job == 'update_lambdas_only'
+      
+    steps:
+      - name: Configure AWS Credentials for Update
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Update Lambda Function Code
         run: |
@@ -74,7 +102,3 @@ jobs:
             --s3-bucket lambda-code-tc3-g38 \
             --s3-key middleware.zip \
             --publish
-
-
-
-
