@@ -59,7 +59,7 @@ const handler = async (event) => {
       if (response.status == 409) {
         return {
           statusCode: 409,
-          message: "Cliente já existe!"
+          message: "Customer already exists"
         };
       }
 
@@ -67,7 +67,7 @@ const handler = async (event) => {
       console.error("Erro ao criar cliente:", err);
   
       if (err.name === "UsernameExistsException") {
-        return { statusCode: 400, body: JSON.stringify({ error: "Cliente já existe!" }) };
+        return { statusCode: 400, body: JSON.stringify({ error: "Customer already exists" }) };
       }
   
       return { statusCode: response.status, body: JSON.stringify({ error: response.message }) };
