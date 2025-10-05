@@ -33,7 +33,7 @@ const handler = async (event) => {
         });
 
         if (response.status == 201) {
-          const customer = await cognito.createUser(cpf);
+          const customer = await cognito.createCustomer(cpf);
           const token = jwt.sign({ cpf: customer.cpf });
           return {
             statusCode: 201,
