@@ -13,17 +13,17 @@ class JwtService {
 
       const cpf = decoded.cpf;
       if (!cpf) {
-        return { statusCode: 400, body: JSON.stringify({ error: "CPF não encontrado no token" }) };
+        return { statusCode: 400, body: JSON.stringify({ error: "Token without CPF" }) };
       }
 
       const customer = await this.cognito.findCustomerByCpf(cpf);
       if (!customer) {
-        return { statusCode: 404, body: JSON.stringify({ error: "Cliente não encontrado no Cognito" }) };
+        return { statusCode: 404, body: JSON.stringify({ error: "Customer not found in Cognito" }) };
       }
 
-      return { statusCode: 200, body: JSON.stringify({ message: "Token válido", user: customer }) };
+      return { statusCode: 200, body: JSON.stringify({ message: "Valid token", user: customer }) };
     } catch (err) {
-      return { statusCode: 401, body: JSON.stringify({ error: "Token inválido ou expirado" }) };
+      return { statusCode: 401, body: JSON.stringify({ error: "Invalid or expired token" }) };
     }
   }
 }

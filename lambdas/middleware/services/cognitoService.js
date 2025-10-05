@@ -12,7 +12,7 @@ class CognitoService {
         this.userPoolId = process.env.COGNITO_USER_POOL_ID || "";
     }
     async findCustomerByCpf(cpf) {
-        console.log("Iniciando busca de cliente:", cpf);
+        console.log("---------- Starting customer search:", cpf);
         try {
             const command = new client_cognito_identity_provider_1.ListUsersCommand({
                 UserPoolId: this.userPoolId,
@@ -20,14 +20,14 @@ class CognitoService {
             });
             const response = await this.client.send(command);
             if (!response.Users || response.Users.length === 0) {
-                console.log("Cliente não encontrado.");
+                console.log("Customer not found.");
                 return null;
             }
             const user = response.Users[0];
             return { cpf: user.Username || "" };
         }
         catch (err) {
-            console.error("Erro ao buscar cliente:", err);
+            console.error("Error searching customer:", err);
             throw err;
         }
     }

@@ -11,13 +11,13 @@ const handler = async (event) => {
     const tokenRaw = body?.token;
 
     if (!tokenRaw) {
-      return { statusCode: 400, body: JSON.stringify({ error: "Token JWT é obrigatório" }) };
+      return { statusCode: 400, body: JSON.stringify({ error: "Token JWT is required" }) };
     }
 
     return await jwtService.verify(tokenRaw);
   } catch (err) {
     console.error("Handler error:", err);
-    return { statusCode: 500, body: JSON.stringify({ error: "Erro interno" }) };
+    return { statusCode: 500, body: JSON.stringify({ error: "Internal error" }) };
   }
 };
 
