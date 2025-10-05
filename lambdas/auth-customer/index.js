@@ -31,7 +31,7 @@ const handler = async (event) => {
     }
     catch (err) {
         console.error("Handler error:", err);
-        return { statusCode: 500, body: JSON.stringify({ error: "Erro interno" }) };
+        return { statusCode: 500, body: JSON.stringify({ error: "Erro interno", err })
     }
 };
 exports.handler = handler;
