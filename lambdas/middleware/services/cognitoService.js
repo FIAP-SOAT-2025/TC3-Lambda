@@ -7,12 +7,12 @@ class CognitoService {
     userPoolId;
     constructor() {
         this.client = new client_cognito_identity_provider_1.CognitoIdentityProviderClient({
-            region: process.env.AWS_REGION || "us-east-2",
+            region: "us-east-1",
         });
         this.userPoolId = process.env.COGNITO_USER_POOL_ID || "";
     }
-    async findUserByCpf(cpf) {
-        console.log("Iniciando busca de usuário:", cpf);
+    async findCustomerByCpf(cpf) {
+        console.log("Iniciando busca de cliente:", cpf);
         try {
             const command = new client_cognito_identity_provider_1.ListUsersCommand({
                 UserPoolId: this.userPoolId,
@@ -20,14 +20,14 @@ class CognitoService {
             });
             const response = await this.client.send(command);
             if (!response.Users || response.Users.length === 0) {
-                console.log("Usuário não encontrado.");
+                console.log("Cliente não encontrado.");
                 return null;
             }
             const user = response.Users[0];
             return { cpf: user.Username || "" };
         }
         catch (err) {
-            console.error("Erro ao buscar usuário:", err);
+            console.error("Erro ao buscar cliente:", err);
             throw err;
         }
     }

@@ -38,17 +38,17 @@ const handler = async (event) => {
           return {
             statusCode: 201,
             body: JSON.stringify({ token }),
-            message: "Usuário criado com sucesso!"
+            message: "Cliente criado com sucesso!"
           };
       }  else {
         return { statusCode: response.status, body: JSON.stringify({ error: response.message }) };
       }
 
       } catch (err) {
-        console.error("Erro ao criar usuário:", err);
+        console.error("Erro ao criar cliente:", err);
     
         if (err.name === "UsernameExistsException") {
-          return { statusCode: 400, body: JSON.stringify({ error: "User account already exists" }) };
+          return { statusCode: 400, body: JSON.stringify({ error: "Cliente account already exists" }) };
         }
     
         return { statusCode: 500, body: err };
