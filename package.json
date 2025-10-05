@@ -1,5 +1,5 @@
 {
-  "name": "lambda-cpf-auth",
+  "name": "lambdas",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
