@@ -19,9 +19,9 @@ const handler = async (event) => {
         if (cpf.length !== 11) {
             return { statusCode: 400, body: JSON.stringify({ error: "CPF inválido" }) };
         }
-        const customer = await cognito.findUserByCpf(cpf);
+        const customer = await cognito.findCustomerByCpf(cpf);
         if (!customer) {
-            return { statusCode: 404, body: JSON.stringify({ error: "Usuário não encontrado" }) };
+            return { statusCode: 404, body: JSON.stringify({ error: "Cliente não encontrado" }) };
         }
         const token = jwt.sign({ cpf: customer.cpf });
         return {

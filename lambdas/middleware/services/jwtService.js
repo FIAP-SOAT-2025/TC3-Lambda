@@ -16,9 +16,9 @@ class JwtService {
         return { statusCode: 400, body: JSON.stringify({ error: "CPF não encontrado no token" }) };
       }
 
-      const customer = await this.cognito.findUserByCpf(cpf);
+      const customer = await this.cognito.findCustomerByCpf(cpf);
       if (!customer) {
-        return { statusCode: 404, body: JSON.stringify({ error: "Usuário não encontrado no Cognito" }) };
+        return { statusCode: 404, body: JSON.stringify({ error: "Cliente não encontrado no Cognito" }) };
       }
 
       return { statusCode: 200, body: JSON.stringify({ message: "Token válido", user: customer }) };

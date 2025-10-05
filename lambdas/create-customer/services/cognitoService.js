@@ -7,12 +7,12 @@ class CognitoService {
     userPoolId;
     constructor() {
         this.client = new client_cognito_identity_provider_1.CognitoIdentityProviderClient({
-            region: process.env.AWS_REGION || "us-east-2",
+            region: "us-east-1",
         });
         this.userPoolId = process.env.COGNITO_USER_POOL_ID || "";
     }
-    async createUser(cpf) {
-        console.log("Criando usuário na base de dados...");
+    async createCustomer(cpf) {
+        console.log("Criando cliente na base de dados...");
         try {
             const command = new client_cognito_identity_provider_1.AdminCreateUserCommand({
                 UserPoolId: this.userPoolId,
@@ -21,11 +21,11 @@ class CognitoService {
                 MessageAction: "SUPPRESS",
             });
             const response = await this.client.send(command);
-            console.log("Usuário criado com sucesso!");
+            console.log("Cliente criado com sucesso!");
             return response.User;
         }
         catch (err) {
-            console.error("Erro ao criar usuário:", err);
+            console.error("Erro ao criar cliente:", err);
             throw err;
         }
     }
