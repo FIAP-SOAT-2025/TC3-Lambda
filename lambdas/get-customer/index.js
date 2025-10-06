@@ -7,7 +7,7 @@ const cognitoClient = new CognitoIdentityProviderClient({ region: "us-east-1" })
 
 const USER_POOL_ID = process.env.COGNITO_USER_POOL_ID;
 const CLIENT_ID = process.env.COGNITO_CLIENT_ID;
-const DEFAULT_PASSWORD = 'l@nchoNETE12#';
+const DEFAULT_PASSWORD = process.env.DEFAULT_PASSWORD;
 
 exports.handler = async (event) => {
   try {
