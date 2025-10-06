@@ -83,20 +83,15 @@ jobs:
         run: |
           echo "🔄 Updating Lambda functions from S3 bucket: lambda-code-tc3-g38"
           aws lambda update-function-code \
-            --function-name auth-customer-function \
-            --s3-bucket lambda-code-tc3-g38 \
-            --s3-key auth-customer.zip \
-            --publish
-            
-          aws lambda update-function-code \
-            --function-name create-customer-function \
+            --function-name CreateCustomer \
             --s3-bucket lambda-code-tc3-g38 \
             --s3-key create-customer.zip \
             --publish
-          
+            
           aws lambda update-function-code \
-            --function-name middleware-function \
+            --function-name GetCustomerByCPF \
             --s3-bucket lambda-code-tc3-g38 \
-            --s3-key middleware.zip \
+            --s3-key get-customer.zip \
             --publish
+          
           echo "✅ All Lambda function codes have been updated and published."

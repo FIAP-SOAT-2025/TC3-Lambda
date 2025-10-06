@@ -1,0 +1,4 @@
+node_modules
+lambdas/create-customer/node_modules
+lambdas/get-customer/node_modules
+.env
