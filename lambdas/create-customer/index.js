@@ -1,77 +1,70 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.handler = void 0;
+const { 
+  CognitoIdentityProviderClient, 
+  AdminCreateUserCommand,
+  AdminSetUserPasswordCommand
+} = require("@aws-sdk/client-cognito-identity-provider");
 
-console.log("Antes cognito service import");
-const cognitoService = require("./services/cognitoService");
+const cognitoClient = new CognitoIdentityProviderClient({ region: "us-east-1" });
 
-console.log("Depois cognito service import",cognitoService);
-const cognito = new cognitoService.CognitoService();
-console.log("Depois cognito  import",cognito);
+const USER_POOL_ID = process.env.COGNITO_USER_POOL_ID;
+const DEFAULT_PASSWORD = 'l@nchoNETE12#';
 
-const apiUrl = `${process.env.CUSTOMER_API_URL}customer`;
-const jwtService = require("./services/jwtService");
-const jwt = new jwtService.JwtService(process.env.JWT_SECRET || "dev-secret");
-
-const handler = async (event) => {
+exports.handler = async (event) => {
   try {
-      if (event.httpMethod !== "POST") {
-          return { statusCode: 405, body: JSON.stringify({ error: "Method not allowed" }) };
-      }
-      const body = event.body ? JSON.parse(event.body) : null;
-      const cpfRaw = body?.cpf;
-      if (!cpfRaw) {
-          return { statusCode: 400, body: JSON.stringify({ error: "CPF é obrigatório" }) };
-      }
-      const cpf = cpfRaw.toString().replace(/\D/g, "");
-      if (cpf.length !== 11) {
-          return { statusCode: 400, body: JSON.stringify({ error: "CPF inválido" }) };
-      }
-      console.log('cpf',cpf);
-      console.log("body.name",body.name);
-      console.log("body.email", body.email);
-      console.log("apiUrl", apiUrl);
-      const token = jwt.sign({ cpf });
-      console.log("token", token);
-      
-      const response = await fetch(apiUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json","Authorization": `Bearer ${token}`},
-        body: JSON.stringify({
-          cpf,
-          name: body.name,
-          email: body.email,
-        }),
-      });
-      console.log("response", response);
+    
+    const { name, email, cpf } = JSON.parse(event.body);
 
-      if (response.status == 201) {
-        console.log("response.status 201");
-        const customer = await cognito.createCustomer(cpf);
-        console.log("customer", customer);
-        return {
-          statusCode: 201,
-          body: JSON.stringify({ token }),
-          message: "Cliente criado com sucesso!"
-        };
-      }
-
-      if (response.status == 409) {
-        return {
-          statusCode: 409,
-          message: "Customer already exists"
-        };
-      }
-
-    } catch (err) {
-      console.error("Erro ao criar cliente:", err);
-  
-      if (err.name === "UsernameExistsException") {
-        return { statusCode: 400, body: JSON.stringify({ error: "Customer already exists" }) };
-      }
-  
-      return { statusCode: response.status, body: JSON.stringify({ error: response.message }) };
+    if (!name || !email || !cpf) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ message: "Nome, email e CPF são obrigatórios." }),
+      };
     }
-  };
 
-exports.handler = handler;
+    const createUserParams = {
+      UserPoolId: USER_POOL_ID,
+      Username: cpf,
+      UserAttributes: [
+        { Name: "email", Value: email },
+        { Name: "custom:nome", Value: name },
+        { Name: "custom:cpf", Value: cpf },
+        { Name: "email_verified", Value: "true" }
+      ],
+      MessageAction: "SUPPRESS",
+    };
+
+    await cognitoClient.send(new AdminCreateUserCommand(createUserParams));
+
+    const setPasswordParams = {
+      UserPoolId: USER_POOL_ID,
+      Username: cpf,
+      Password: DEFAULT_PASSWORD,
+      Permanent: true,
+    };
+
+    await cognitoClient.send(new AdminSetUserPasswordCommand(setPasswordParams));
+
+    const apiResponse = await fetch(`${process.env.API_ENDPOINT}customer`, {
+      method: 'POST',
+      body: JSON.stringify({ name, email, cpf }),
+      headers: { 'Content-Type': 'application/json' }
+    });
+    if (!apiResponse.ok) {
+      console.error("Falha ao salvar usuário na API interna");
+    }
+
+    return {
+      statusCode: 201,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        message: "Usuário criado com sucesso!"
+      }),
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ message: "Erro ao criar usuário.", error: error.message }),
+    };
+  }
+};

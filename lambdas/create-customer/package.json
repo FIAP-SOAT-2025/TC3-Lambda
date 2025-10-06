@@ -1,0 +1,14 @@
+{
+  "name": "create-customer-lambda",
+  "version": "1.0.0",
+  "description": "Lambda para criar um usuário no Cognito e na API interna.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@aws-sdk/client-cognito-identity-provider": "^3.585.0"
+  }
+}
