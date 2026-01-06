@@ -60,10 +60,10 @@ jobs:
 
       - name: Upload All Lambdas to S3 🚀
         run: |
-          aws s3 sync ./dist/ s3://lambda-code-tc3-g38/ \
+          aws s3 sync ./dist/ s3://lambda-code-tc4/ \
             --exclude "*" \
             --include "*.zip" 
-          echo "✅ All zip files uploaded to s3://lambda-code-tc3-g38/"
+          echo "✅ All zip files uploaded to s3://lambda-code-tc4/"
 
   update-lambdas:
     runs-on: ubuntu-latest
@@ -81,16 +81,16 @@ jobs:
 
       - name: Update Lambda Function Code
         run: |
-          echo "🔄 Updating Lambda functions from S3 bucket: lambda-code-tc3-g38"
+          echo "🔄 Updating Lambda functions from S3 bucket: lambda-code-tc4"
           aws lambda update-function-code \
             --function-name CreateCustomer \
-            --s3-bucket lambda-code-tc3-g38 \
+            --s3-bucket lambda-code-tc4 \
             --s3-key create-customer.zip \
             --publish
             
           aws lambda update-function-code \
             --function-name GetCustomerByCPF \
-            --s3-bucket lambda-code-tc3-g38 \
+            --s3-bucket lambda-code-tc4 \
             --s3-key get-customer.zip \
             --publish
           
